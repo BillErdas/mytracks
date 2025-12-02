@@ -49,8 +49,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
+    // Dynamic Background Logic
+    const dynamicBg = document.getElementById('dynamic-bg');
+
     trackCards.forEach(card => {
         observer.observe(card);
+
+        // Hover effect for background
+        card.addEventListener('mouseenter', () => {
+            const img = card.querySelector('img');
+            if (img && dynamicBg) {
+                dynamicBg.style.backgroundImage = `url('${img.src}')`;
+                dynamicBg.style.opacity = '1';
+            }
+        });
+
+        card.addEventListener('mouseleave', () => {
+            if (dynamicBg) {
+                dynamicBg.style.opacity = '0';
+            }
+        });
     });
 
     const closeMusicModal = () => {
