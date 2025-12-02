@@ -1,19 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.tab');
-
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs
-            tabs.forEach(t => t.classList.remove('active'));
-
-            // Add active class to clicked tab
-            tab.classList.add('active');
-
-            // Optional: Add a subtle click animation or sound here if requested
-            console.log(`Tab ${tab.dataset.tab} clicked`);
-        });
-    });
-
     // Modal Logic
     const modal = document.getElementById('music-modal');
     const closeModal = document.querySelector('.close-modal');
@@ -80,9 +65,65 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal.addEventListener('click', closeMusicModal);
     }
 
+    // Contact Modal Logic
+    const contactBtn = document.getElementById('contact-btn');
+    const contactModal = document.getElementById('contact-modal');
+    const closeContact = document.querySelector('.close-contact');
+    const emailForm = document.getElementById('email-form');
+
+    if (contactBtn) {
+        contactBtn.addEventListener('click', () => {
+            contactModal.classList.remove('hidden');
+        });
+    }
+
+    const closeContactModal = () => {
+        contactModal.classList.add('hidden');
+    };
+
+    if (closeContact) {
+        closeContact.addEventListener('click', closeContactModal);
+    }
+
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeMusicModal();
         }
+        if (e.target === contactModal) {
+            closeContactModal();
+        }
     });
+
+    if (emailForm) {
+        emailForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = emailForm.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Sending...';
+
+            const name = document.getElementById('sender-name').value;
+            const email = document.getElementById('sender-email').value;
+            const message = document.getElementById('sender-message').value;
+
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                message: message,
+                to_email: 'billerdas@gmail.com'
+            };
+
+            // Replace 'YOUR_SERVICE_ID' and 'YOUR_TEMPLATE_ID' with your actual EmailJS IDs
+            emailjs.send('service_zd6taqq', 'template_w7z1v9m', templateParams)
+                .then(() => {
+                    alert('Message sent successfully!');
+                    closeContactModal();
+                    emailForm.reset();
+                    btn.innerText = originalText;
+                }, (error) => {
+                    alert('Failed to send message. Please try again or email billerdas@gmail.com directly.');
+                    console.error('FAILED...', error);
+                    btn.innerText = originalText;
+                });
+        });
+    }
 });

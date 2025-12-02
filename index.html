@@ -8,22 +8,22 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            // https://dashboard.emailjs.com/admin/account
+            emailjs.init("0SfF8j91g_ulIVo1c");
+        })();
+    </script>
 </head>
 
 <body>
     <div id="default-bg"></div>
     <div id="dynamic-bg"></div>
     <header>
-        <nav>
-            <ul class="tabs">
-                <li class="tab active" data-tab="1">Tracks</li>
-                <li class="tab" data-tab="2">Albums</li>
-                <li class="tab" data-tab="3">Playlists</li>
-                <li class="tab" data-tab="4">About</li>
-                <li class="tab" data-tab="5">Contact</li>
-            </ul>
-        </nav>
+        <h1>My Tracks & Remixes</h1>
     </header>
 
     <main>
@@ -204,6 +204,21 @@
             <span class="close-modal">&times;</span>
             <iframe id="soundcloud-player" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
                 src=""></iframe>
+        </div>
+    </div>
+
+    <div id="contact-btn">Contact</div>
+
+    <div id="contact-modal" class="modal hidden">
+        <div class="modal-content contact-form-container">
+            <span class="close-contact">&times;</span>
+            <h2>Contact Me</h2>
+            <form id="email-form">
+                <input type="text" id="sender-name" placeholder="Your Name" required>
+                <input type="email" id="sender-email" placeholder="Your Email" required>
+                <textarea id="sender-message" placeholder="Message" rows="5" required></textarea>
+                <button type="submit">Send Email</button>
+            </form>
         </div>
     </div>
 
