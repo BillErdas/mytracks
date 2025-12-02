@@ -9,8 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('click', () => {
             const trackUrl = card.dataset.trackUrl;
             if (trackUrl) {
-                const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                player.src = embedUrl;
+                // Check for Luminary track (Bill Erdas ft. Xristiana)
+                if (trackUrl.includes('bill-erdas-ft-xristiana')) {
+                    // Use Spotify embed for Luminary track
+                    const spotifyEmbedUrl = 'https://open.spotify.com/embed/track/6LHnttZXpn4LEKST4AemKc';
+                    player.src = spotifyEmbedUrl;
+                } else {
+                    // Default Soundcloud embed
+                    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+                    player.src = embedUrl;
+                }
                 modal.classList.remove('hidden');
             }
         });
