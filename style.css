@@ -315,18 +315,6 @@ main {
 }
 
 @media (max-width: 768px) {
-    .tabs {
-        gap: 1rem;
-        padding: 0.8rem 1.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-        border-radius: 20px;
-    }
-
-    .tab {
-        font-size: 0.9rem;
-    }
-
     .gallery-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
