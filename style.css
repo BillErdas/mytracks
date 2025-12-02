@@ -208,6 +208,74 @@ main {
     color: var(--accent-color);
 }
 
+/* Stats Circle */
+#stats-circle {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    width: 110px;
+    height: 110px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    animation: pulse-glow 3s infinite;
+}
+
+#stats-circle:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
+}
+
+.stat-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+}
+
+.stat-group span {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.stat-group small {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-divider {
+    width: 60%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 4px 0;
+}
+
+@keyframes pulse-glow {
+    0% {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 25px rgba(0, 242, 255, 0.2);
+    }
+
+    100% {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
 /* Contact Button & Modal */
 #contact-btn {
     position: fixed;
