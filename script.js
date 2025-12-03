@@ -6,22 +6,71 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackCards = document.querySelectorAll('.track-card');
 
     trackCards.forEach(card => {
-        card.addEventListener('click', () => {
-            const trackUrl = card.dataset.trackUrl;
-            if (trackUrl) {
-                // Check for Luminary track (Bill Erdas ft. Xristiana)
-                if (trackUrl.includes('bill-erdas-ft-xristiana')) {
-                    // Use Spotify embed for Luminary track
+        // Skip Listen More card
+        if (card.id === 'listen-more-card') return;
+
+        const trackUrl = card.dataset.trackUrl;
+        if (!trackUrl) return;
+
+        // Restructure DOM to accommodate player
+        const img = card.querySelector('img');
+        const overlay = card.querySelector('.overlay');
+
+        // Create wrapper for cover image and overlay
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('cover-wrapper');
+
+        // Move elements into wrapper
+        if (img) wrapper.appendChild(img);
+        if (overlay) wrapper.appendChild(overlay);
+
+        // Clear card content and append wrapper
+        card.innerHTML = '';
+        card.appendChild(wrapper);
+
+        // Create Player Container
+        const playerContainer = document.createElement('div');
+        playerContainer.classList.add('player-container');
+
+        const iframe = document.createElement('iframe');
+        iframe.width = "100%";
+        iframe.scrolling = "no";
+        iframe.frameBorder = "no";
+        iframe.allow = "autoplay";
+
+        // Default Soundcloud embed (Compact)
+        // visual=false makes it compact
+        const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false`;
+        iframe.src = embedUrl;
+        iframe.height = "120"; // SoundCloud compact height
+
+        // Check for Luminary track (Bill Erdas ft. Xristiana)
+        if (trackUrl.includes('bill-erdas-ft-xristiana')) {
+            // Add "Listen On Spotify" text to overlay
+            const spotifyLink = document.createElement('h4');
+            spotifyLink.innerText = 'Listen On Spotify';
+            spotifyLink.style.cursor = 'pointer';
+            spotifyLink.style.marginTop = '10px';
+            spotifyLink.style.color = '#1DB954'; // Spotify Green
+            spotifyLink.style.fontWeight = '600';
+
+            // Append to overlay if it exists
+            const overlay = wrapper.querySelector('.overlay');
+            if (overlay) {
+                overlay.appendChild(spotifyLink);
+
+                // Add click event to open Spotify in modal
+                spotifyLink.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubbling
                     const spotifyEmbedUrl = 'https://open.spotify.com/embed/track/6LHnttZXpn4LEKST4AemKc';
                     player.src = spotifyEmbedUrl;
-                } else {
-                    // Default Soundcloud embed
-                    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                    player.src = embedUrl;
-                }
-                modal.classList.remove('hidden');
+                    modal.classList.remove('hidden');
+                });
             }
-        });
+        }
+
+        playerContainer.appendChild(iframe);
+        card.appendChild(playerContainer);
     });
 
     // Scroll Animation Observer
