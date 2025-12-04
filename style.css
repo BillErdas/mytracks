@@ -88,7 +88,7 @@ main {
 
 .gallery-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     /* 6 columns */
     gap: 1.5rem;
     width: 100%;
@@ -366,11 +366,7 @@ main {
 }
 
 /* Responsive */
-@media (max-width: 1400px) {
-    .gallery-container {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
+
 
 @media (max-width: 1024px) {
     .gallery-container {
