@@ -397,3 +397,151 @@ main {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/* Custom Additions for Header & Featured Track */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+.ethnocentric-title {
+    font-family: 'Ethnocentric Rg', 'Orbitron', sans-serif !important;
+    font-size: 5rem;
+    color: var(--text-color);
+    text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--secondary-accent);
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 2px;
+}
+
+.ethnocentric-subtitle {
+     font-family: 'Ethnocentric Rg', 'Orbitron', sans-serif !important;
+     font-size: 1.8rem;
+     color: var(--text-color);
+     text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--secondary-accent);
+     margin: 0;
+     margin-top: -10px;
+     font-weight: 300;
+     letter-spacing: 5px;
+}
+
+@media (max-width: 768px) {
+    .ethnocentric-title {
+        font-size: 3rem;
+    }
+    .ethnocentric-subtitle {
+        font-size: 1.2rem;
+    }
+}
+
+.featured-track {
+    grid-column: 1 / -1; 
+    aspect-ratio: auto; /* override the 1/1 aspect ratio from regular cards */
+    height: 350px; 
+}
+
+.featured-track .overlay {
+    flex-direction: column;
+}
+
+.featured-track .overlay h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(0,0,0,0.8);
+}
+
+.featured-artist-text {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-family: 'Ethnocentric Rg', 'Orbitron', sans-serif !important;
+    font-size: 2rem;
+    color: var(--text-color);
+    text-shadow: 0 5px 15px rgba(0,0,0,0.9), 0 0 20px var(--accent-color);
+    pointer-events: none;
+    z-index: 5;
+    letter-spacing: 2px;
+}
+
+.featured-title-text {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-family: 'Ethnocentric Rg', 'Orbitron', sans-serif !important;
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    text-shadow: 0 5px 15px rgba(0,0,0,0.9), 0 0 20px var(--secondary-accent);
+    pointer-events: none;
+    z-index: 5;
+    letter-spacing: 3px;
+}
+
+.featured-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.featured-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 1px solid var(--accent-color);
+    color: var(--text-color);
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    font-size: 1rem;
+    z-index: 20; /* Ensure clickable over background */
+}
+
+.permanent-spotify-btn {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.featured-btn.spotify-btn:hover {
+    background: #1DB954;
+    border-color: #1DB954;
+    color: white;
+    box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+    transform: translateY(-2px);
+}
+
+.featured-btn.soundcloud-btn:hover {
+    background: #ff5500;
+    border-color: #ff5500;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 85, 0, 0.6);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .featured-track {
+        height: 250px;
+    }
+    .featured-track .overlay h3 {
+        font-size: 1.3rem;
+    }
+    .featured-links {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    .featured-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    .featured-artist-text {
+        font-size: 1.2rem;
+        top: 15px;
+        left: 15px;
+    }
+    .featured-title-text {
+        font-size: 1.5rem;
+        bottom: 15px;
+        right: 15px;
+    }
+}
