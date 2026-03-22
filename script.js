@@ -6,23 +6,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackCards = document.querySelectorAll('.track-card');
 
     trackCards.forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            // Do not open modal if standard URL is clicked directly (like the Spotify button)
+            if (e.target.tagName === 'A' || e.target.classList.contains('featured-btn')) {
+                return;
+            }
             const trackUrl = card.dataset.trackUrl;
             if (trackUrl) {
-                // Check for Luminary track (Bill Erdas ft. Xristiana)
-                if (trackUrl.includes('bill-erdas-ft-xristiana')) {
-                    // Use Spotify embed for Luminary track
-                    const spotifyEmbedUrl = 'https://open.spotify.com/embed/track/6LHnttZXpn4LEKST4AemKc';
-                    player.src = spotifyEmbedUrl;
-                } else {
-                    // Default Soundcloud embed
-                    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                    player.src = embedUrl;
-                }
+                const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+                player.src = embedUrl;
                 modal.classList.remove('hidden');
             }
         });
     });
+
+    // Make the explicit SoundCloud button open the modal
+    const featuredScBtn = document.querySelector('#featured-luminary .soundcloud-btn');
+    if (featuredScBtn) {
+        featuredScBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const trackUrl = featuredScBtn.getAttribute('href');
+            if (trackUrl) {
+                const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
+                player.src = embedUrl;
+                modal.classList.remove('hidden');
+            }
+        });
+    }
 
     // Scroll Animation Observer
     const observerOptions = {
