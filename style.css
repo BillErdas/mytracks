@@ -494,13 +494,64 @@ main {
     z-index: 20; /* Ensure clickable over background */
 }
 
-.permanent-spotify-btn {
+.permanent-streaming-links {
     position: absolute;
     bottom: 20px;
     left: 20px;
-    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 5;
+}
+
+.listen-on-text {
     font-size: 0.85rem;
+    text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--text-color);
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.streaming-icons {
+    display: flex;
+    gap: 12px;
+}
+
+.stream-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    color: var(--text-color);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
+}
+
+.stream-icon.spotify-icon:hover {
+    background: #1DB954;
+    border-color: #1DB954;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(29, 185, 84, 0.6);
+}
+
+.stream-icon.apple-icon:hover {
+    background: #fa243c;
+    border-color: #fa243c;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(250, 36, 60, 0.6);
+}
+
+.stream-icon.deezer-icon:hover {
+    background: #A238FF;
+    border-color: #A238FF;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(162, 56, 255, 0.6);
 }
 
 .featured-btn.spotify-btn:hover {
@@ -508,6 +559,14 @@ main {
     border-color: #1DB954;
     color: white;
     box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+    transform: translateY(-2px);
+}
+
+.featured-btn.youtube-btn:hover {
+    background: #FF0000;
+    border-color: #FF0000;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
     transform: translateY(-2px);
 }
 
@@ -543,5 +602,14 @@ main {
         font-size: 1.5rem;
         bottom: 15px;
         right: 15px;
+    }
+    .permanent-streaming-links {
+        bottom: 15px;
+        left: 15px;
+    }
+    .stream-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
     }
 }

@@ -34,6 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Make the explicit YouTube button open the modal
+    const featuredYtBtn = document.querySelector('#featured-luminary .youtube-btn');
+    if (featuredYtBtn) {
+        featuredYtBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Extracted video ID from: https://www.youtube.com/watch?v=3N2K7nTBoO0&list=RD3N2K7nTBoO0&start_radio=1
+            const embedUrl = `https://www.youtube.com/embed/3N2K7nTBoO0?autoplay=1`;
+            player.src = embedUrl;
+            modal.classList.remove('hidden');
+        });
+    }
+
     // Scroll Animation Observer
     const observerOptions = {
         threshold: 0.1,
