@@ -20,20 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Make the explicit SoundCloud button open the modal
-    const featuredScBtn = document.querySelector('#featured-luminary .soundcloud-btn');
-    if (featuredScBtn) {
-        featuredScBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const trackUrl = featuredScBtn.getAttribute('href');
-            if (trackUrl) {
-                const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                player.src = embedUrl;
-                modal.classList.remove('hidden');
-            }
-        });
-    }
-
     // Make the explicit YouTube button open the modal
     const featuredYtBtn = document.querySelector('#featured-luminary .youtube-btn');
     if (featuredYtBtn) {
