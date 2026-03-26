@@ -145,34 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Visitor Stats Logic (Removed)
     
-    // Listen More functionality
-    const listenMoreCard = document.getElementById('listen-more-card');
+    // Listen & Download More functionality
+    const listenMoreBtn = document.getElementById('listen-more-btn');
     const listenModal = document.getElementById('listen-modal');
     const closeListenModal = document.getElementById('close-listen-modal');
     const listenIframe = document.getElementById('listen-iframe');
     const dropboxFolderUrl = 'https://www.dropbox.com/scl/fo/tnlutnpdezagooz4it5yy/ALQQVCPLmY-HghqEBHC5bGs?rlkey=gb5xs5dr77elondilkr98i5nq&dl=0';
 
-    if (listenMoreCard) {
-        // Add observer for animation consistency
-        observer.observe(listenMoreCard);
-
-        listenMoreCard.addEventListener('click', () => {
+    if (listenMoreBtn) {
+        listenMoreBtn.addEventListener('click', () => {
             window.open(dropboxFolderUrl, '_blank');
-        });
-
-        // Hover effect for background (reuse existing logic if possible, or add specific)
-        listenMoreCard.addEventListener('mouseenter', () => {
-            const img = listenMoreCard.querySelector('img');
-            if (img && dynamicBg) {
-                dynamicBg.style.backgroundImage = `url('${img.src}')`;
-                dynamicBg.style.opacity = '1';
-            }
-        });
-
-        listenMoreCard.addEventListener('mouseleave', () => {
-            if (dynamicBg) {
-                dynamicBg.style.opacity = '0';
-            }
         });
     }
     if (closeListenModal) {
