@@ -13,9 +13,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const trackUrl = card.dataset.trackUrl;
             if (trackUrl) {
-                const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-                player.src = embedUrl;
-                modal.classList.remove('hidden');
+                // If this card already has the player, do nothing
+                if (card.querySelector('.inline-soundcloud-player')) {
+                    return;
+                }
+
+                // Remove player from other cards and restore their images
+                document.querySelectorAll('.track-card').forEach(otherCard => {
+                    const existingPlayer = otherCard.querySelector('.inline-soundcloud-player');
+                    if (existingPlayer) {
+                        existingPlayer.remove();
+                        const overlay = otherCard.querySelector('.overlay');
+                        if (overlay) overlay.style.display = '';
+                    }
+                });
+
+                // Create inline player for this card
+                const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(trackUrl)}&color=%23ff5500&auto_play=true&visual=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false`;
+                
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrl;
+                iframe.className = 'inline-soundcloud-player';
+                iframe.setAttribute('allow', 'autoplay');
+                iframe.setAttribute('frameborder', 'no');
+                iframe.setAttribute('scrolling', 'no');
+                
+                // Hide the overlay, but keep the cover image visible
+                // so it shines through the 50% opacity iframe
+                const overlay = card.querySelector('.overlay');
+                if (overlay) overlay.style.display = 'none';
+                
+                // Hide featured-specific elements if present
+                const pLinks = card.querySelector('.permanent-streaming-links');
+                if (pLinks) pLinks.style.display = 'none';
+                const fArtist = card.querySelector('.featured-artist-text');
+                if (fArtist) fArtist.style.display = 'none';
+                const fTitle = card.querySelector('.featured-title-text');
+                if (fTitle) fTitle.style.display = 'none';
+                
+                card.appendChild(iframe);
             }
         });
     });
@@ -25,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (featuredYtBtn) {
         featuredYtBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            // Extracted video ID from: https://www.youtube.com/watch?v=3N2K7nTBoO0&list=RD3N2K7nTBoO0&start_radio=1
             const embedUrl = `https://www.youtube.com/embed/3N2K7nTBoO0?autoplay=1`;
             player.src = embedUrl;
             modal.classList.remove('hidden');
@@ -145,22 +180,122 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Visitor Stats Logic (Removed)
     
-    // Listen & Download More functionality
+    // Sidebar Playlist functionality
     const listenMoreBtn = document.getElementById('listen-more-btn');
-    const listenModal = document.getElementById('listen-modal');
-    const closeListenModal = document.getElementById('close-listen-modal');
-    const listenIframe = document.getElementById('listen-iframe');
-    const dropboxFolderUrl = 'https://www.dropbox.com/scl/fo/tnlutnpdezagooz4it5yy/ALQQVCPLmY-HghqEBHC5bGs?rlkey=gb5xs5dr77elondilkr98i5nq&dl=0';
+    const sidebarPlaylist = document.getElementById('sidebar-playlist');
+    const closeSidebarBtn = document.querySelector('.close-sidebar');
+    const audioPlayer = document.getElementById('sidebar-audio-player');
+    const playlistItems = document.querySelectorAll('.playlist-item');
+    let currentPlayingItem = null;
 
-    if (listenMoreBtn) {
+    if (listenMoreBtn && sidebarPlaylist) {
         listenMoreBtn.addEventListener('click', () => {
-            window.open(dropboxFolderUrl, '_blank');
+            sidebarPlaylist.classList.add('open');
+            listenMoreBtn.style.opacity = '0';
+            listenMoreBtn.style.pointerEvents = 'none';
         });
     }
-    if (closeListenModal) {
-        closeListenModal.addEventListener('click', () => {
-            listenModal.classList.add('hidden');
-            listenIframe.src = '';
+
+    const closeSidebar = () => {
+        sidebarPlaylist.classList.remove('open');
+        listenMoreBtn.style.opacity = '1';
+        listenMoreBtn.style.pointerEvents = 'auto';
+        
+        if (audioPlayer && !audioPlayer.paused) {
+            audioPlayer.pause();
+        }
+        if (currentPlayingItem) {
+            currentPlayingItem.classList.remove('playing');
+            const oldBtn = currentPlayingItem.querySelector('.play-pause-btn');
+            if(oldBtn) oldBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+    };
+
+    if (closeSidebarBtn && sidebarPlaylist) {
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+    }
+
+    document.addEventListener('click', (e) => {
+        if (sidebarPlaylist && sidebarPlaylist.classList.contains('open')) {
+            if (!sidebarPlaylist.contains(e.target) && 
+                (!listenMoreBtn || !listenMoreBtn.contains(e.target))) {
+                closeSidebar();
+            }
+        }
+    });
+
+    if (playlistItems && audioPlayer) {
+        playlistItems.forEach(item => {
+            const playBtn = item.querySelector('.play-pause-btn');
+            if (playBtn) {
+                playBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const src = item.dataset.src;
+                    
+                    if (currentPlayingItem === item) {
+                        if (audioPlayer.paused) {
+                            audioPlayer.play();
+                            item.classList.add('playing');
+                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        } else {
+                            audioPlayer.pause();
+                            item.classList.remove('playing');
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+                    } else {
+                        if (currentPlayingItem) {
+                            currentPlayingItem.classList.remove('playing');
+                            const oldBtn = currentPlayingItem.querySelector('.play-pause-btn');
+                            if(oldBtn) oldBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+                        
+                        audioPlayer.src = src;
+                        audioPlayer.play();
+                        item.classList.add('playing');
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                        currentPlayingItem = item;
+                    }
+                });
+            }
         });
+
+        audioPlayer.addEventListener('ended', () => {
+            if (currentPlayingItem) {
+                currentPlayingItem.classList.remove('playing');
+                const btn = currentPlayingItem.querySelector('.play-pause-btn');
+                if(btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+                currentPlayingItem = null;
+            }
+        });
+
+        // Seek Bar Logic
+        const seekBar = document.querySelector('.seek-bar');
+        const currentTimeEl = document.querySelector('.current-time');
+        const totalTimeEl = document.querySelector('.total-time');
+
+        if (seekBar && currentTimeEl && totalTimeEl) {
+            audioPlayer.addEventListener('timeupdate', () => {
+                if (audioPlayer.duration) {
+                    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                    seekBar.value = progress;
+                    
+                    currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+                    totalTimeEl.textContent = formatTime(audioPlayer.duration);
+                }
+            });
+
+            seekBar.addEventListener('input', () => {
+                if (audioPlayer.duration) {
+                    const seekTo = (seekBar.value / 100) * audioPlayer.duration;
+                    audioPlayer.currentTime = seekTo;
+                }
+            });
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
     }
 });
