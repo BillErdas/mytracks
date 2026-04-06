@@ -225,6 +225,12 @@ document.addEventListener('DOMContentLoaded', () => {
             trackInfo.appendChild(inlinePlayer);
         }
 
+        ['click', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'mousedown', 'mouseup'].forEach((eventName) => {
+            inlinePlayer.addEventListener(eventName, (e) => {
+                e.stopPropagation();
+            });
+        });
+
         activeSeekBar = inlinePlayer.querySelector('.seek-bar');
         activeCurrentTimeEl = inlinePlayer.querySelector('.current-time');
         activeTotalTimeEl = inlinePlayer.querySelector('.total-time');
@@ -318,6 +324,16 @@ document.addEventListener('DOMContentLoaded', () => {
         closeSidebarBtn.addEventListener('click', closeSidebar);
     }
 
+    if (sidebarPlaylist) {
+        ['click', 'pointerdown', 'touchstart', 'mousedown'].forEach((eventName) => {
+            sidebarPlaylist.addEventListener(eventName, (e) => {
+                if (e.target.closest('.seek-bar')) {
+                    e.stopPropagation();
+                }
+            });
+        });
+    }
+
     document.addEventListener('click', (e) => {
         if (sidebarPlaylist && sidebarPlaylist.classList.contains('open')) {
             if (!sidebarPlaylist.contains(e.target) && 
@@ -333,6 +349,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             item.addEventListener('click', (e) => {
                 if (e.target.closest('.download-track-btn')) {
+                    return;
+                }
+
+                if (e.target.closest('.playlist-item-player')) {
                     return;
                 }
 
