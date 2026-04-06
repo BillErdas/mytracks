@@ -193,6 +193,106 @@ document.addEventListener('DOMContentLoaded', () => {
     const audioPlayer = document.getElementById('sidebar-audio-player');
     const playlistItems = document.querySelectorAll('.playlist-item');
     let currentPlayingItem = null;
+    let activeSeekBar = null;
+    let activeCurrentTimeEl = null;
+    let activeTotalTimeEl = null;
+
+    const formatTime = (seconds) => {
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    };
+
+    const attachInlinePlayer = (item) => {
+        const trackInfo = item.querySelector('.track-info-sidebar');
+
+        if (!trackInfo) {
+            return;
+        }
+
+        let inlinePlayer = item.querySelector('.playlist-item-player');
+
+        if (!inlinePlayer) {
+            inlinePlayer = document.createElement('div');
+            inlinePlayer.className = 'playlist-item-player';
+            inlinePlayer.innerHTML = `
+                <div class="progress-info">
+                    <span class="current-time">0:00</span>
+                    <span class="total-time">0:00</span>
+                </div>
+                <input type="range" class="seek-bar" value="0" min="0" max="100" step="0.1">
+            `;
+            trackInfo.appendChild(inlinePlayer);
+        }
+
+        activeSeekBar = inlinePlayer.querySelector('.seek-bar');
+        activeCurrentTimeEl = inlinePlayer.querySelector('.current-time');
+        activeTotalTimeEl = inlinePlayer.querySelector('.total-time');
+
+        if (activeSeekBar) {
+            activeSeekBar.value = 0;
+            activeSeekBar.oninput = () => {
+                if (audioPlayer.duration) {
+                    const seekTo = (activeSeekBar.value / 100) * audioPlayer.duration;
+                    audioPlayer.currentTime = seekTo;
+                }
+            };
+        }
+
+        if (activeCurrentTimeEl) {
+            activeCurrentTimeEl.textContent = '0:00';
+        }
+
+        if (activeTotalTimeEl) {
+            activeTotalTimeEl.textContent = '0:00';
+        }
+    };
+
+    const resetPlaylistItem = (item) => {
+        if (!item) {
+            return;
+        }
+
+        item.classList.remove('playing', 'is-player');
+
+        const button = item.querySelector('.play-pause-btn');
+        if (button) {
+            button.innerHTML = '<i class="fas fa-play"></i>';
+        }
+
+        const inlinePlayer = item.querySelector('.playlist-item-player');
+        if (inlinePlayer) {
+            inlinePlayer.remove();
+        }
+
+        if (currentPlayingItem === item) {
+            currentPlayingItem = null;
+            activeSeekBar = null;
+            activeCurrentTimeEl = null;
+            activeTotalTimeEl = null;
+        }
+    };
+
+    const activatePlaylistItem = (item) => {
+        const src = item.dataset.src;
+        const playBtn = item.querySelector('.play-pause-btn');
+
+        if (!src || !playBtn) {
+            return;
+        }
+
+        if (currentPlayingItem && currentPlayingItem !== item) {
+            resetPlaylistItem(currentPlayingItem);
+        }
+
+        item.classList.add('playing', 'is-player');
+        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        attachInlinePlayer(item);
+
+        audioPlayer.src = src;
+        audioPlayer.play();
+        currentPlayingItem = item;
+    };
 
     if (listenMoreBtn && sidebarPlaylist) {
         listenMoreBtn.addEventListener('click', () => {
@@ -210,11 +310,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (audioPlayer && !audioPlayer.paused) {
             audioPlayer.pause();
         }
-        if (currentPlayingItem) {
-            currentPlayingItem.classList.remove('playing');
-            const oldBtn = currentPlayingItem.querySelector('.play-pause-btn');
-            if(oldBtn) oldBtn.innerHTML = '<i class="fas fa-play"></i>';
-        }
+        audioPlayer.currentTime = 0;
+        resetPlaylistItem(currentPlayingItem);
     };
 
     if (closeSidebarBtn && sidebarPlaylist) {
@@ -233,75 +330,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (playlistItems && audioPlayer) {
         playlistItems.forEach(item => {
             const playBtn = item.querySelector('.play-pause-btn');
+
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.download-track-btn')) {
+                    return;
+                }
+
+                if (currentPlayingItem === item && !audioPlayer.paused) {
+                    audioPlayer.pause();
+                    resetPlaylistItem(item);
+                    return;
+                }
+
+                activatePlaylistItem(item);
+            });
+
             if (playBtn) {
                 playBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const src = item.dataset.src;
                     
-                    if (currentPlayingItem === item) {
-                        if (audioPlayer.paused) {
-                            audioPlayer.play();
-                            item.classList.add('playing');
-                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        } else {
-                            audioPlayer.pause();
-                            item.classList.remove('playing');
-                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        }
+                    if (currentPlayingItem === item && !audioPlayer.paused) {
+                        audioPlayer.pause();
+                        resetPlaylistItem(item);
                     } else {
-                        if (currentPlayingItem) {
-                            currentPlayingItem.classList.remove('playing');
-                            const oldBtn = currentPlayingItem.querySelector('.play-pause-btn');
-                            if(oldBtn) oldBtn.innerHTML = '<i class="fas fa-play"></i>';
-                        }
-                        
-                        audioPlayer.src = src;
-                        audioPlayer.play();
-                        item.classList.add('playing');
-                        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                        currentPlayingItem = item;
+                        activatePlaylistItem(item);
                     }
                 });
             }
         });
 
         audioPlayer.addEventListener('ended', () => {
-            if (currentPlayingItem) {
-                currentPlayingItem.classList.remove('playing');
-                const btn = currentPlayingItem.querySelector('.play-pause-btn');
-                if(btn) btn.innerHTML = '<i class="fas fa-play"></i>';
-                currentPlayingItem = null;
+            resetPlaylistItem(currentPlayingItem);
+        });
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            if (activeTotalTimeEl && audioPlayer.duration) {
+                activeTotalTimeEl.textContent = formatTime(audioPlayer.duration);
             }
         });
 
-        // Seek Bar Logic
-        const seekBar = document.querySelector('.seek-bar');
-        const currentTimeEl = document.querySelector('.current-time');
-        const totalTimeEl = document.querySelector('.total-time');
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (activeSeekBar && audioPlayer.duration) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                activeSeekBar.value = progress;
+            }
 
-        if (seekBar && currentTimeEl && totalTimeEl) {
-            audioPlayer.addEventListener('timeupdate', () => {
-                if (audioPlayer.duration) {
-                    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                    seekBar.value = progress;
-                    
-                    currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
-                    totalTimeEl.textContent = formatTime(audioPlayer.duration);
-                }
-            });
+            if (activeCurrentTimeEl) {
+                activeCurrentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+            }
 
-            seekBar.addEventListener('input', () => {
-                if (audioPlayer.duration) {
-                    const seekTo = (seekBar.value / 100) * audioPlayer.duration;
-                    audioPlayer.currentTime = seekTo;
-                }
-            });
-        }
-
-        function formatTime(seconds) {
-            const min = Math.floor(seconds / 60);
-            const sec = Math.floor(seconds % 60);
-            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-        }
+            if (activeTotalTimeEl && audioPlayer.duration) {
+                activeTotalTimeEl.textContent = formatTime(audioPlayer.duration);
+            }
+        });
     }
 });

@@ -710,6 +710,10 @@ main {
     transition: all 0.3s ease;
 }
 
+.playlist-item.is-player {
+    align-items: flex-start;
+}
+
 .playlist-item:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: var(--accent-color);
@@ -751,11 +755,26 @@ main {
     overflow: hidden;
 }
 
+.playlist-item.playing .track-artist,
+.playlist-item.playing .download-track-btn {
+    display: none;
+}
+
+.playlist-item.playing .track-info-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
 .track-title {
     font-weight: 600;
     font-size: 0.95rem;
     line-height: 1.2;
     margin-bottom: 0.2rem;
+}
+
+.playlist-item.playing .track-title {
+    margin-bottom: 0;
 }
 
 .track-artist {
@@ -786,19 +805,6 @@ main {
     background: rgba(0, 242, 255, 0.1);
 }
 
-.sidebar-global-player {
-    margin-top: auto;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    position: relative;
-    background: rgba(10, 10, 10, 0.95);
-    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-    flex-shrink: 0;
-}
-
 .progress-info {
     display: flex;
     justify-content: space-between;
@@ -806,6 +812,20 @@ main {
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.8);
     font-family: var(--font-main);
+}
+
+.playlist-item-player {
+    display: none;
+}
+
+.playlist-item.playing .playlist-item-player {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.playlist-item-player .progress-info {
+    font-size: 0.7rem;
 }
 
 .seek-bar {
