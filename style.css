@@ -382,9 +382,6 @@ main {
     box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
 }
 
-/* Responsive */
-
-
 @media (max-width: 768px) {
     .gallery-container {
         gap: 1rem;
@@ -392,6 +389,18 @@ main {
 
     header h1 {
         font-size: 3rem;
+    }
+}
+
+@media (orientation: landscape) {
+    .gallery-container {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (orientation: portrait) {
+    .gallery-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
