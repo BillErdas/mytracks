@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         existingPlayer.remove();
                         const overlay = otherCard.querySelector('.overlay');
                         if (overlay) overlay.style.display = '';
+                        const pLinks = otherCard.querySelector('.permanent-streaming-links');
+                        if (pLinks) pLinks.style.display = '';
+                        const fArtist = otherCard.querySelector('.featured-artist-text');
+                        if (fArtist) fArtist.style.display = '';
+                        const fTitle = otherCard.querySelector('.featured-title-text');
+                        if (fTitle) fTitle.style.display = '';
                     }
                 });
 
