@@ -6,12 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const trackCards = document.querySelectorAll('.track-card');
 
     trackCards.forEach(card => {
+        const trackUrl = card.dataset.trackUrl;
+
         card.addEventListener('click', (e) => {
             // Do not open modal if standard URL is clicked directly (like the Spotify button)
-            if (e.target.tagName === 'A' || e.target.classList.contains('featured-btn')) {
+            if (e.target.closest('a') || e.target.classList.contains('featured-btn')) {
                 return;
             }
-            const trackUrl = card.dataset.trackUrl;
             if (trackUrl) {
                 // If this card already has the player, do nothing
                 if (card.querySelector('.inline-soundcloud-player')) {
