@@ -443,6 +443,10 @@ main {
     height: 350px; 
 }
 
+.featured-track img {
+    object-position: center bottom;
+}
+
 .featured-track .overlay {
     flex-direction: column;
 }
@@ -464,19 +468,6 @@ main {
     pointer-events: none;
     z-index: 5;
     letter-spacing: 2px;
-}
-
-.featured-title-text {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    font-family: 'Ethnocentric Rg', 'Orbitron', sans-serif !important;
-    font-size: 2.5rem;
-    color: var(--accent-color);
-    text-shadow: 0 5px 15px rgba(0,0,0,0.9), 0 0 20px var(--secondary-accent);
-    pointer-events: none;
-    z-index: 5;
-    letter-spacing: 3px;
 }
 
 .featured-links {
@@ -610,11 +601,6 @@ main {
         font-size: 1.2rem;
         top: 15px;
         left: 15px;
-    }
-    .featured-title-text {
-        font-size: 1.5rem;
-        bottom: 15px;
-        right: 15px;
     }
     .permanent-streaming-links {
         bottom: 15px;
